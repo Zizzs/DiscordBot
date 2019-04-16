@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-const client = new Discord.Client();
+const { Client, Attachment } = require("discord.js");
+const client = new Client();
 
 //Bots Channel
 const botChannel = client.channels.get("567821555598360584");
@@ -35,6 +35,12 @@ client.on("message", receivedMessage => {
   }
 });
 
+client.on("guildMemberAdd", member => {
+  const channel = member.guild.channels.find(ch => ch.name === "general");
+  if (!channel) return;
+  channel.send(`Welcome to the server, ${member}`);
+});
+
 client.on("error", error => {
   console.log(error);
 });
@@ -49,15 +55,28 @@ function processCommand(receivedMessage) {
   console.log("Arguments: " + arguments); // There may not be any arguments
 
   if (
-    primaryCommand === "ping" &&
+    primaryCommand === "commands" &&
     receivedMessage.channel.id === "567821555598360584"
   ) {
-    receivedMessage.channel.send("Pong");
+    receivedMessage.channel.send(`
+    Commands: 
+    !multiply
+    !rip
+    !ping
+    `);
   } else if (
     primaryCommand === "multiply" &&
     receivedMessage.channel.id === "567821555598360584"
   ) {
     multiplyCommand(arguments, receivedMessage);
+  } else if (primaryCommand === "rip") {
+    const attachment = new Attachment("https://i.imgur.com/w3duR07.png");
+    receivedMessage.channel.send(attachment);
+  } else if (
+    primaryCommand === "ping" &&
+    receivedMessage.channel.id === "567821555598360584"
+  ) {
+    receivedMessage.channel.send("Pong");
   }
 }
 
@@ -79,6 +98,6 @@ function multiplyCommand(arguments, receivedMessage) {
       product.toString()
   );
 }
-bot_secret_token = "XXXXX";
+bot_secret_token = "XXXX";
 
 client.login(bot_secret_token);
