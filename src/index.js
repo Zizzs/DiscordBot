@@ -1,4 +1,17 @@
 const { Client, Attachment } = require("discord.js");
+let mongoose = require("mongoose");
+
+//Import Commands
+const showAllCommands = require("../src/commands/commands");
+const multiplyCommand = require("../src/commands/multiply");
+const ripCommand = require("../src/commands/rip");
+const pingCommand = require("../src/commands/pingPong");
+const eventCommands = require("../src/commands/events");
+
+//Import Config
+const config = require("../src/config");
+
+//Start new Client
 const client = new Client();
 
 //Bots Channel
@@ -56,48 +69,36 @@ function processCommand(receivedMessage) {
 
   if (
     primaryCommand === "commands" &&
-    receivedMessage.channel.id === "567821555598360584"
+    receivedMessage.channel.id === "568089592217993227"
   ) {
-    receivedMessage.channel.send(`
-    Commands: 
-    !multiply
-    !rip
-    !ping
-    `);
+    showAllCommands(receivedMessage);
   } else if (
     primaryCommand === "multiply" &&
-    receivedMessage.channel.id === "567821555598360584"
+    receivedMessage.channel.id === "568089592217993227"
   ) {
     multiplyCommand(arguments, receivedMessage);
   } else if (primaryCommand === "rip") {
-    const attachment = new Attachment("https://i.imgur.com/w3duR07.png");
-    receivedMessage.channel.send(attachment);
+    ripCommand(receivedMessage);
   } else if (
     primaryCommand === "ping" &&
-    receivedMessage.channel.id === "567821555598360584"
+    receivedMessage.channel.id === "568089592217993227"
   ) {
-    receivedMessage.channel.send("Pong");
+    pingCommand(receivedMessage);
+  } else if (
+    primaryCommand === "event" &&
+    arguments[0] === "add" &&
+    receivedMessage.channel.id === "568089592217993227"
+  ) {
+    eventCommands.eventAddCommand(arguments[1], arguments[2]);
+  } else if (
+    primaryCommand === "event" &&
+    arguments[0] === "showAll" &&
+    receivedMessage.channel.id === "568089592217993227"
+  ) {
+    eventCommands.eventShowAllCommand(receivedMessage);
   }
 }
 
-function multiplyCommand(arguments, receivedMessage) {
-  if (arguments.length < 2) {
-    receivedMessage.channel.send(
-      "Not enough values to multiply. Try `!multiply 2 4 10` or `!multiply 5.2 7`"
-    );
-    return;
-  }
-  let product = 1;
-  arguments.forEach(value => {
-    product = product * parseFloat(value);
-  });
-  receivedMessage.channel.send(
-    "The product of " +
-      arguments +
-      " multiplied together is: " +
-      product.toString()
-  );
-}
-bot_secret_token = "XXXX";
+bot_secret_token = config.botToken;
 
 client.login(bot_secret_token);
