@@ -96,6 +96,12 @@ function processCommand(receivedMessage) {
     receivedMessage.channel.id === "568089592217993227"
   ) {
     eventCommands.eventShowAllCommand(receivedMessage);
+  } else if (
+    primaryCommand === "event" &&
+    arguments[0] === "help" &&
+    receivedMessage.channel.id === "568089592217993227"
+  ) {
+    eventCommands.eventHelpCommand(receivedMessage);
   }
 }
 
